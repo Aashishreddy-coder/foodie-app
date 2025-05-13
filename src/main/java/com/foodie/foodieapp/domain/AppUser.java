@@ -29,6 +29,9 @@ public class AppUser {
 
     private String address;
 
+    private String image;
+    
+
 
 
      

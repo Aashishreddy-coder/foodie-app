@@ -1,9 +1,14 @@
 package com.foodie.foodieapp.service;
 
+import java.io.IOException;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 import com.foodie.foodieapp.domain.AppUser;
+import com.foodie.foodieapp.dto.RegisterRequest;
 import com.foodie.foodieapp.exceptions.InvalidCredentialsException;
 import com.foodie.foodieapp.exceptions.UserAlreadyExistsException;
 import com.foodie.foodieapp.repository.UserRepository;
@@ -15,12 +20,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+
+    @Value("${project.image}")
+    private String path;
+
     @Override
-    public AppUser save(AppUser user) {
+    public AppUser save(RegisterRequest user, MultipartFile image) throws UserAlreadyExistsException, IOException {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException(user.getEmail());
         }
-        return userRepository.save(user);
+
+        String fileName =fileService.uploadImage(path,image);
+
+        AppUser appUser=modelMapper.map(user, AppUser.class);
+
+        appUser.setImage(fileName);
+
+
+
+
+
+        return userRepository.save(appUser);
     }
 
     @Override
@@ -50,5 +76,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmailAndPassword(email, password)
             .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
     }
+
+   
 
 }   
