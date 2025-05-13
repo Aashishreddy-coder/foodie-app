@@ -68,20 +68,25 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody AppUser user) {
+        try {
+            AppUser updatedUser = userService.updateUser(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
-    
-
-
-
-
-
-
-
-
-
-    
-
-
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
 
