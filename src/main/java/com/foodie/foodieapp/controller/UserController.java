@@ -1,16 +1,24 @@
 package com.foodie.foodieapp.controller;
 
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foodie.foodieapp.domain.AppUser;
 import com.foodie.foodieapp.exceptions.UserNotFoundException;
 import com.foodie.foodieapp.exceptions.UserAlreadyExistsException;
 import com.foodie.foodieapp.exceptions.InvalidCredentialsException;
 import com.foodie.foodieapp.jwt.JwtUtil;
 import com.foodie.foodieapp.service.UserService;
+
+import java.io.IOException;
+
 import com.foodie.foodieapp.dto.LoginRequest;
+import com.foodie.foodieapp.dto.RegisterRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,18 +29,26 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody AppUser user) {
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> registerUser(
+            @RequestPart("user") String userJson,
+            @RequestPart("image") MultipartFile image) throws IOException {
+    
+        ObjectMapper objectMapper = new ObjectMapper();
+        RegisterRequest user = objectMapper.readValue(userJson, RegisterRequest.class);
+    
         try {
-            AppUser savedUser = userService.save(user);
+            AppUser savedUser = userService.save(user, image);
             return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) throws InvalidCredentialsException {
         try {
             AppUser user = userService.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
             String token = jwtUtil.generateToken(user);
@@ -51,6 +67,21 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
 }
 
 

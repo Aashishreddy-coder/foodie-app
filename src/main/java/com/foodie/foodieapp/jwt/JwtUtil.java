@@ -3,11 +3,11 @@ package com.foodie.foodieapp.jwt;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
+
 import com.foodie.foodieapp.domain.AppUser;
 
 
