@@ -25,7 +25,7 @@ public class FavouritesController {
         try {
             favouriteService.saveDishes(favourites);
             return new ResponseEntity<>("Dish saved successfully", HttpStatus.CREATED);
-        } catch (InvalidFavouriteDataException |FavouriteAlreadyExistsException e) {
+        } catch (InvalidFavouriteDataException | FavouriteAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
