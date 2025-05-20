@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FavouritesRepository extends MongoRepository<Favourites, Long> {
+public interface FavouritesRepository extends MongoRepository<Favourites, String> {
 
-    boolean existsByUserIdAndDishId(Long userId, Long dishId);
+    boolean existsByUserIdAndDishId(Long userId, String dishId);
     List<Favourites> findAllByUserId(Long userId);
 }

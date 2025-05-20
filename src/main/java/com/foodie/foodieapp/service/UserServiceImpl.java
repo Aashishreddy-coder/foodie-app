@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser save(RegisterRequest user, MultipartFile image) throws UserAlreadyExistsException, IOException {
+        
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException(user.getEmail());
         }

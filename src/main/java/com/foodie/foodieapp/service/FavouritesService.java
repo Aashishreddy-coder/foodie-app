@@ -7,7 +7,7 @@ import java.util.List;
 public interface FavouritesService {
     Favourites saveDishes(Favourites favourites);
 
-    void deleteDishes(Long id);
+    void deleteDishes(String id);
 
     List<Favourites> getAllDishes(Long userId);
 }
