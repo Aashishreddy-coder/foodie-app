@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "favourites")
 public class Favourites {
     @Id
-    private Long id;
+    private String id;
     private Long userId;
-    private Long dishId;
+    private String dishId;
 }

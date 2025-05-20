@@ -22,7 +22,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     }
 
     @Override
-    public void deleteDishes(Long id) {
+    public void deleteDishes(String id) {
         favouriteRepository.deleteById(id);
     }
 

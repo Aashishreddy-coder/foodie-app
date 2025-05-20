@@ -26,8 +26,10 @@ public class FavouritesController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteDishes(@PathVariable Long id){
+    public ResponseEntity<?> deleteDishes(@PathVariable String id){
         favouriteService.deleteDishes(id);
         return new ResponseEntity<>("Dish deleted successfully",HttpStatus.OK);
     }
+
+    
 }
