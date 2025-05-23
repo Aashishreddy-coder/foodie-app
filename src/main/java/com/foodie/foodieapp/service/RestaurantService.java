@@ -21,6 +21,8 @@ public interface RestaurantService {
 
     List<RestaurantDTO> getRestaurantsByLocation(Double latitude, Double longitude, String city, String query);
 
+    
+
     List<Restaurant> getAllRestaurants();
 
   
