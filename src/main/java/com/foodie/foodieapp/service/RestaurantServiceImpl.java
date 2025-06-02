@@ -88,7 +88,11 @@ public class RestaurantServiceImpl implements RestaurantService {
                 restaurants = restaurantRespository.findByCityAndRestaurantNameIgnoreCase(city, query);
             } else if (city != null && !city.isEmpty()) {
                 restaurants = restaurantRespository.findByCityIgnoreCase(city);
-            } else {
+            }
+            else if (query != null && !query.isEmpty()) {
+                restaurants = restaurantRespository.findByRestaurantNameContainingIgnoreCase(query);
+            }
+            else {
                 restaurants = restaurantRespository.findAll();
             }
         }

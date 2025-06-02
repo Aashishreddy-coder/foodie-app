@@ -22,12 +22,12 @@ public interface RestaurantRespository extends MongoRepository<Restaurant, Strin
 
     List<Restaurant> findByRestaurantNameContainingIgnoreCase(String name);
 
-    List<Restaurant> findByGeoLocationNearAndCityIgnoreCaseAndRestaurantNameContainingIgnoreCase(GeoJsonPoint location, String city, String name);
+    List<Restaurant> findByGeoLocationNearAndCityIgnoreCaseAndRestaurantNameContainingIgnoreCase(GeoJsonPoint userlocation, String city, String name);
 
-    List<Restaurant> findByCityAndRestaurantNameIgnoreCase(String city, String query);
+    List<Restaurant> findByCityAndRestaurantNameIgnoreCase(String city, String name);
    
     
-    List<Restaurant> findByGeoLocationNearAndRestaurantNameContainingIgnoreCase(GeoJsonPoint userLocation, String query);
+    List<Restaurant> findByGeoLocationNearAndRestaurantNameContainingIgnoreCase(GeoJsonPoint userLocation, String name);
 
 
             

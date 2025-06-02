@@ -41,11 +41,13 @@ public class RestaurantController {
 
     @GetMapping("/nearby")
     public ResponseEntity<List<RestaurantDTO>> getRestaurantsByLocation(
-            @RequestParam Double latitude,
-            @RequestParam Double longitude,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
             @RequestParam(required = false) String city,
-            @RequestParam(required = false) String query) {
-        List<RestaurantDTO> restaurants = restaurantService.getRestaurantsByLocation(latitude, longitude, city, query);
+            @RequestParam(required = false) String name) {
+                
+          
+        List<RestaurantDTO> restaurants = restaurantService.getRestaurantsByLocation(latitude, longitude, city, name);
         return ResponseEntity.ok(restaurants);
     }
     
