@@ -22,13 +22,13 @@ public class FavouritesRepositoryTest {
     private FavouritesRepository favouritesRepository;
 
     private Favourites testFavourite;
-    private Long userId = 123L;
+    private String userEmail = "test@test.com";
     private String dishId = "dish123";
 
     @BeforeEach
     void setUp() {
         testFavourite = new Favourites();
-        testFavourite.setUserId(userId);
+        testFavourite.setUserEmail(userEmail);
         testFavourite.setDishId(dishId);
         mongoTemplate.save(testFavourite);
     }
@@ -36,7 +36,7 @@ public class FavouritesRepositoryTest {
     @Test
     void existsByUserIdAndDishId_ShouldReturnTrue_WhenFavouriteExists() {
         // when
-        boolean exists = favouritesRepository.existsByUserIdAndDishId(userId, dishId);
+        boolean exists = favouritesRepository.existsByUserEmailAndDishId(userEmail, dishId);
 
         // then
         assertTrue(exists);
@@ -45,7 +45,7 @@ public class FavouritesRepositoryTest {
     @Test
     void existsByUserIdAndDishId_ShouldReturnFalse_WhenFavouriteDoesNotExist() {
         // when
-        boolean exists = favouritesRepository.existsByUserIdAndDishId(999L, "nonexistentDish");
+        boolean exists = favouritesRepository.existsByUserEmailAndDishId("nonexistent@test.com", "nonexistentDish");
 
         // then
         assertFalse(exists);
@@ -54,11 +54,11 @@ public class FavouritesRepositoryTest {
     @Test
     void findAllByUserId_ShouldReturnFavourites_WhenFavouritesExist() {
         // when
-        List<Favourites> found = favouritesRepository.findAllByUserId(userId);
+        List<Favourites> found = favouritesRepository.findAllByUserEmail(userEmail);
 
         // then
         assertFalse(found.isEmpty());
-        assertEquals(userId, found.get(0).getUserId());
+        assertEquals(userEmail, found.get(0).getUserEmail());
         assertEquals(dishId, found.get(0).getDishId());
     }
 } 

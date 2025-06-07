@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface FavouritesRepository extends MongoRepository<Favourites, String> {
 
-    boolean existsByUserIdAndDishId(Long userId, String dishId);
-    List<Favourites> findAllByUserId(Long userId);
+    boolean existsByUserEmailAndDishId(String userEmail, String dishId);
+    List<Favourites> findAllByUserEmail(String userEmail);
 }

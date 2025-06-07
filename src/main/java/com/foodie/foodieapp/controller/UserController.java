@@ -1,6 +1,6 @@
 package com.foodie.foodieapp.controller;
 
-import org.apache.tomcat.util.http.parser.MediaType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +36,7 @@ public class UserController {
     
         ObjectMapper objectMapper = new ObjectMapper();
         RegisterRequest user = objectMapper.readValue(userJson, RegisterRequest.class);
+        
     
         try {
             AppUser savedUser = userService.save(user, image);

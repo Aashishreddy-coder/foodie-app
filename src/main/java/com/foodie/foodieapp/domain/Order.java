@@ -16,10 +16,18 @@ import java.util.List;
 public class Order {
     @Id
     private String id;
-    private String userId;
+    private String userEmail;
     private String restaurantId;
+    
+   
     private List<OrderItem> items = new ArrayList<>();
     private double totalAmount;
+
+    private String paymentStatus; // PENDING, COMPLETED, FAILED
+private String paymentIntentId;
+private String paymentMethod;
+private String transactionId;
+private String paymentDate;
 }
 
 

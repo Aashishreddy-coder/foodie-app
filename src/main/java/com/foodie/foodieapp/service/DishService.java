@@ -21,4 +21,8 @@ public interface DishService {
 
     List<DishDTO> getAllDishes();
 
+    DishDTO getDishById(String id, Double latitude, Double longitude);
+
 }
+
+

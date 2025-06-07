@@ -144,6 +144,33 @@ public class DishServiceImpl implements DishService {
         return dishDTOs;
     }
 
+    @Override
+    public DishDTO getDishById(String id, Double latitude, Double longitude) {
+        Dish dish = dishRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Dish not found with id: " + id));
+        
+        DishDTO dto = modelMapper.map(dish, DishDTO.class);
+        
+        // Get restaurant details
+        Restaurant restaurant = restaurantService.getRestaurantById(dish.getRestaurantId());
+        if (restaurant != null) {
+            dto.setRestaurantName(restaurant.getRestaurantName());
+            
+            // Calculate distance if coordinates are provided
+            if (latitude != null && longitude != null && restaurant.getGeoLocation() != null) {
+                double distance = GeoUtils.calculateDistance(
+                    latitude,
+                    longitude,
+                    restaurant.getGeoLocation().getY(), // restaurant latitude
+                    restaurant.getGeoLocation().getX()  // restaurant longitude
+                );
+                dto.setDistanceInKm(distance);
+            }
+        }
+        
+        return dto;
+    }
+
 
     
     

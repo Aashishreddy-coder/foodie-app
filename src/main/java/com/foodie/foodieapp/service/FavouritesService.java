@@ -9,5 +9,5 @@ public interface FavouritesService {
 
     void deleteDishes(String id);
 
-    List<Favourites> getAllDishes(Long userId);
+    List<Favourites> getAllDishes();
 }

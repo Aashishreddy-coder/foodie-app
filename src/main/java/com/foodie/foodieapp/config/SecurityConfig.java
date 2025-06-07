@@ -30,14 +30,17 @@ public class SecurityConfig {
             .cors(cors -> {}
             )
             .authorizeHttpRequests(auth -> auth
+            .anyRequest().permitAll()
+            // 
             
-                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                .anyRequest().authenticated() 
+                // .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                // .anyRequest().authenticated() 
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+    
 
     @Bean
 public CorsConfigurationSource corsConfigurationSource() {

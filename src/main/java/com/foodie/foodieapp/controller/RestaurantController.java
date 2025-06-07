@@ -51,6 +51,7 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurants);
     }
     
+    
 
     @GetMapping("/city/{city}")
     public ResponseEntity<List<Restaurant>> getRestaurantsByCity(@PathVariable String city) {

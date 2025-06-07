@@ -16,9 +16,9 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @GetMapping("/get/{userId}")
-    public ResponseEntity<ApiResponse<Order>> getOrder(@PathVariable String userId){
-        Order order = orderService.getOrder(userId);
+    @GetMapping("/get")
+    public ResponseEntity<ApiResponse<Order>> getOrder() {
+        Order order = orderService.getOrder();
         if(order == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>("error", "Order is empty", null));
@@ -27,24 +27,26 @@ public class OrderController {
                 .ok(new ApiResponse<>("success", "Order fetched successfully", order));
     }
 
-    @PostMapping("/add/{userId}")
+    @PostMapping("/add")
     public ResponseEntity<ApiResponse<Order>> addItemToOrder(
-            @PathVariable String userId,
             @RequestParam String restaurantId,
             @RequestBody OrderItem item
     ){
-        Order order = orderService.addItemToOrder(userId, restaurantId, item);
+        Order order = orderService.addItemToOrder(restaurantId, item);
+        if(order == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>("error", "Cannot add items from different restaurants", null));
+        }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("success", "Item added to order", order));
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse<Order>> updateItemQuantity(
-            @PathVariable String userId,
             @RequestParam String dishId,
             @RequestParam String action
     ){
-        Order updatedOrder = orderService.updateItemQuantity(userId, dishId, action);
+        Order updatedOrder = orderService.updateItemQuantity(dishId, action);
         if(updatedOrder == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>("error", "Order not found", null));
@@ -53,12 +55,11 @@ public class OrderController {
                 .ok(new ApiResponse<>("success", "Item quantity updated", updatedOrder));
     }
 
-    @DeleteMapping("/remove/{userId}")
+    @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse<Order>> removeItemFromOrder(
-            @PathVariable String userId,
             @RequestParam String dishId
     ){
-        Order updatedOrder = orderService.removeItemFromOrder(userId, dishId);
+        Order updatedOrder = orderService.removeItemFromOrder(dishId);
         if(updatedOrder == null){
             return ResponseEntity.ok(
                     new ApiResponse<>("success", "Order cleared as the last item was removed", null)
@@ -68,14 +69,10 @@ public class OrderController {
                 .ok(new ApiResponse<>("success", "Item removed from order", updatedOrder));
     }
 
-    @DeleteMapping("/clear/{userId}")
-    public ResponseEntity<ApiResponse<Void>> clearOrder(@PathVariable String userId){
-        orderService.clearOrder(userId);
+    @DeleteMapping("/clear")
+    public ResponseEntity<ApiResponse<Void>> clearOrder() {
+        orderService.clearOrder();
         return ResponseEntity
                 .ok(new ApiResponse<>("success", "Order cleared", null));
     }
-
-    
-
-
 }

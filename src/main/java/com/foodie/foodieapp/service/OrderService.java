@@ -4,13 +4,13 @@ import com.foodie.foodieapp.domain.Order;
 import com.foodie.foodieapp.domain.OrderItem;
 
 public interface OrderService {
-    Order getOrder(String userId);
+    Order getOrder();
 
-    Order addItemToOrder(String userId, String restaurantId, OrderItem item);
+    Order addItemToOrder(String restaurantId, OrderItem item);
 
-    Order updateItemQuantity(String userId, String dishId, String action);
+    Order updateItemQuantity(String dishId, String action);
 
-    Order removeItemFromOrder(String userId, String dishId);
+    Order removeItemFromOrder(String dishId);
 
-    void clearOrder(String userId);
+    void clearOrder();
 }

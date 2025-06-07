@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String fileName =fileService.uploadImage(path,image);
+        
 
         AppUser appUser=modelMapper.map(user, AppUser.class);
 

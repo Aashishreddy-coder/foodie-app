@@ -4,6 +4,7 @@ import com.foodie.foodieapp.domain.Order;
 import com.foodie.foodieapp.domain.OrderItem;
 import com.foodie.foodieapp.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,38 +16,44 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private OrderRepository orderRepository;
 
-    @Override
-    public Order getOrder(String userId) {
-        return orderRepository.findByUserId(userId);
+    private String getUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @Override
-    public Order addItemToOrder(String userId, String restaurantId, OrderItem item) {
-        Order order = orderRepository.findByUserId(userId);
+    public Order getOrder() {
+        return orderRepository.findByUserEmail(getUserEmail());
+    }
 
+    @Override
+    public Order addItemToOrder(String restaurantId, OrderItem item) {
+        String userEmail = getUserEmail();
+        Order order = orderRepository.findByUserEmail(userEmail);
+    
         if(order == null){
             order = new Order();
-            order.setUserId(userId);
+            order.setUserEmail(userEmail);
             order.setRestaurantId(restaurantId);
+            order.setPaymentStatus("PENDING"); // Set initial payment status
         } else if(!order.getRestaurantId().equals(restaurantId)){
-            order.setItems(new ArrayList<>());
-            order.setRestaurantId(restaurantId);
+            return null;
         }
-
+    
         for(OrderItem existingItem : order.getItems()){
             if(existingItem.getDishId().equals(item.getDishId())){
                 return order;
             }
         }
         order.getItems().add(item);
-
+    
         updateTotalAmount(order);
         return orderRepository.save(order);
     }
 
     @Override
-    public Order updateItemQuantity(String userId, String dishId, String action) {
-        Order order = orderRepository.findByUserId(userId);
+    public Order updateItemQuantity(String dishId, String action) {
+        String userEmail = getUserEmail();
+        Order order = orderRepository.findByUserEmail(userEmail);
         if(order == null) return null;
 
         List<OrderItem> items = order.getItems();
@@ -61,7 +68,7 @@ public class OrderServiceImpl implements OrderService{
                         item.setQuantity(currentQuantity - 1);
                     } else {
                         if(items.size() == 1){
-                            orderRepository.deleteByUserId(userId);
+                            orderRepository.deleteByUserEmail(userEmail);
                             return null;
                         }
                         else{
@@ -77,14 +84,15 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order removeItemFromOrder(String userId, String dishId) {
-        Order order = orderRepository.findByUserId(userId);
+    public Order removeItemFromOrder(String dishId) {
+        String userEmail = getUserEmail();
+        Order order = orderRepository.findByUserEmail(userEmail);
         if(order == null) return null;
 
         List<OrderItem> items = order.getItems();
 
         if(items.size() == 1 && items.getFirst().getDishId().equals(dishId)){
-            orderRepository.deleteByUserId(userId);
+            orderRepository.deleteByUserEmail(userEmail);
             return null;
         }
         items.removeIf(item -> item.getDishId().equals(dishId));
@@ -94,13 +102,12 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void clearOrder(String userId) {
-        orderRepository.deleteByUserId(userId);
+    public void clearOrder() {
+        orderRepository.deleteByUserEmail(getUserEmail());
     }
 
     private void updateTotalAmount(Order order){
         double total = 0;
-
         for(OrderItem item : order.getItems()){
             total += item.getPrice() * item.getQuantity();
         }

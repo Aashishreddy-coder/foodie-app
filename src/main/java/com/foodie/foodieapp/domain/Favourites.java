@@ -13,6 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Favourites {
     @Id
     private String id;
-    private Long userId;
+    private String userEmail;
     private String dishId;
 }

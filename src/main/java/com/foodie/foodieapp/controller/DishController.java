@@ -62,19 +62,31 @@ public class DishController {
 
             List<DishDTO> dishes = dishService.searchDishesByNameAndRestaurantIds(name, city, latitude, longitude);
 
+
+
+
+
+
+
+
         
            
 
             return new ResponseEntity<>(dishes, HttpStatus.OK);
+            
 
 
        
     }
 
+
+    
+
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<DishDTO>> getDishesByRestaurant(@PathVariable String restaurantId, @RequestParam(required = false) Double distanceInKm) {
         List<DishDTO> dishes = dishService.getDishesByRestaurant(restaurantId, distanceInKm);
         return new ResponseEntity<>(dishes, HttpStatus.OK);
+
     }
 
     @GetMapping("/all")
@@ -82,6 +94,20 @@ public class DishController {
         List<DishDTO> dishes = dishService.getAllDishes();
         return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DishDTO> getDishById(
+            @PathVariable String id,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude) {
+        DishDTO dish = dishService.getDishById(id, latitude, longitude);
+        return new ResponseEntity<>(dish, HttpStatus.OK);
+    }
+
+
+
+
+
 
    
 

@@ -1,6 +1,9 @@
 package com.foodie.foodieapp.controller;
 
 import com.foodie.foodieapp.domain.Favourites;
+import com.foodie.foodieapp.exceptions.FavouriteAlreadyExistsException;
+import com.foodie.foodieapp.exceptions.FavouriteNotFoundException;
+import com.foodie.foodieapp.exceptions.InvalidFavouriteDataException;
 import com.foodie.foodieapp.service.FavouritesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,14 +18,58 @@ public class FavouritesController {
     private FavouritesService favouriteService;
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveDishes(@RequestBody Favourites favourites){
-        favouriteService.saveDishes(favourites);
-        return new ResponseEntity<>("Dish saved successfully",HttpStatus.CREATED);
+    public ResponseEntity<?> saveDishes(@RequestBody Favourites favourites) throws InvalidFavouriteDataException ,FavouriteAlreadyExistsException{
+        try{
+            favouriteService.saveDishes(favourites);
+            return new ResponseEntity<>("Dish saved successfully",HttpStatus.CREATED);
+        }catch(InvalidFavouriteDataException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch(FavouriteAlreadyExistsException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+
+
+        
+
+        
+
     }
 
-    @GetMapping("/get/{userId}")
-    public ResponseEntity<?> getAllDishes(@PathVariable Long userId){
-        return new ResponseEntity<>(favouriteService.getAllDishes(userId), HttpStatus.OK);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllDishes() throws FavouriteNotFoundException{
+        try{
+            return new ResponseEntity<>(favouriteService.getAllDishes(), HttpStatus.OK);
+        }catch(FavouriteNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        
     }
 
     @DeleteMapping("/delete/{id}")
