@@ -7,10 +7,6 @@ target/
 images/
 
 
-src/main/resources/application.properties
-
-!src/main/resources/application.properties.template
-
 
 
 
@@ -43,3 +39,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Application Properties ###
+src/main/resources/application.properties
