@@ -10,4 +10,5 @@ public interface FavouritesService {
     void deleteDishes(String id);
 
     List<Favourites> getAllDishes();
+    
 }

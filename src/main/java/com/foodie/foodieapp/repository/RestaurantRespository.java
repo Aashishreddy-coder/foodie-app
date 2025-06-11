@@ -29,6 +29,8 @@ public interface RestaurantRespository extends MongoRepository<Restaurant, Strin
     
     List<Restaurant> findByGeoLocationNearAndRestaurantNameContainingIgnoreCase(GeoJsonPoint userLocation, String name);
 
+    
+
 
             
 

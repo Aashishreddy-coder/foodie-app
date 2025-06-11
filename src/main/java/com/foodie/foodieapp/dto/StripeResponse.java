@@ -1,5 +1,7 @@
 package com.foodie.foodieapp.dto;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +17,5 @@ public class StripeResponse {
     private String message;
     private String sessionId;
     private String sessionUrl;
-    
+    private Map<String, String> metadata;
 }

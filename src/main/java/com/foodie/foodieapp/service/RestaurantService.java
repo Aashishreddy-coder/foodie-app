@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 import com.foodie.foodieapp.domain.Restaurant;
+import com.foodie.foodieapp.dto.LocationDetailsResponse;
 import com.foodie.foodieapp.dto.RestaurantDTO;
 
 public interface RestaurantService {
@@ -17,22 +18,9 @@ public interface RestaurantService {
 
     List<Restaurant> getRestaurantsByCity(String city);
 
-  
-
     List<RestaurantDTO> getRestaurantsByLocation(Double latitude, Double longitude, String city, String query);
-
-    
 
     List<Restaurant> getAllRestaurants();
 
-  
-
-  
-
-
-
-
-
-   
-
+    LocationDetailsResponse calculateDistanceToRestaurant(String restaurantId, Double latitude, Double longitude);
 }

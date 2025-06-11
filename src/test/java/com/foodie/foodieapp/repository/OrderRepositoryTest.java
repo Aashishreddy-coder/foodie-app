@@ -30,7 +30,7 @@ public class OrderRepositoryTest {
         mongoTemplate.dropCollection(Order.class);
         
         testOrder = new Order();
-        testOrder.setUserId(userId);
+        testOrder.setUserEmail(userId);
         testOrder.setTotalAmount(100.0);
         mongoTemplate.save(testOrder);
     }
@@ -38,18 +38,18 @@ public class OrderRepositoryTest {
     @Test
     void findByUserId_ShouldReturnOrders_WhenOrdersExist() {
         // when
-        Order found = orderRepository.findByUserId(userId);
+        Order found = orderRepository.findByUserEmail(userId);
 
         // then
         assertNotNull(found);
-        assertEquals(userId, found.getUserId());
+        assertEquals(userId, found.getUserEmail());
         assertEquals(100.0, found.getTotalAmount());
     }
 
     @Test
     void findByUserId_ShouldReturnEmptyList_WhenNoOrdersExist() {
         // when
-        Order found = orderRepository.findByUserId("nonexistentUser");
+        Order found = orderRepository.findByUserEmail("nonexistentUser");
 
         // then
         assertNull(found);
@@ -58,10 +58,12 @@ public class OrderRepositoryTest {
     @Test
     void deleteByUserId_ShouldDeleteOrders_WhenOrdersExist() {
         // when
-        orderRepository.deleteByUserId(userId);
+        orderRepository.deleteByUserEmail(userId);
 
         // then
-        Order deleted = orderRepository.findByUserId(userId);
+        Order deleted = orderRepository.findByUserEmail(userId);
         assertNull(deleted);
+
     }
+    
 } 

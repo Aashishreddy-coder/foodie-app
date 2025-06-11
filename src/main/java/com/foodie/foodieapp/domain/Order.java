@@ -23,11 +23,10 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
     private double totalAmount;
 
-    private String paymentStatus; // PENDING, COMPLETED, FAILED
-private String paymentIntentId;
-private String paymentMethod;
-private String transactionId;
-private String paymentDate;
+    
+
+
+
 }
 
 

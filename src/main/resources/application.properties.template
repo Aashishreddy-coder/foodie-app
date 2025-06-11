@@ -2,8 +2,8 @@ spring.application.name=foodieapp
 
 # Database Configuration
 spring.datasource.url=jdbc:mysql://localhost:3306/foodieapp?createDatabaseIfNotExist=true
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.datasource.username=root
+spring.datasource.password=root
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 server.port=8085

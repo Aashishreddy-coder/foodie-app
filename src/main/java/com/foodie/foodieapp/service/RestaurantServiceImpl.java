@@ -5,16 +5,28 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foodie.foodieapp.domain.Restaurant;
+import com.foodie.foodieapp.dto.LocationDetailsResponse;
 import com.foodie.foodieapp.dto.RestaurantDTO;
 import com.foodie.foodieapp.repository.RestaurantRespository;
 import com.foodie.foodieapp.utils.GeoUtils;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
+  @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private RestaurantRespository restaurantRespository;
@@ -62,6 +74,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     public List<Restaurant> getRestaurantsByCity(String city) {
         return restaurantRespository.findByCityIgnoreCase(city);
     }
+
+    
+
 
    
 
@@ -121,10 +136,65 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public List<Restaurant> getAllRestaurants() {
         return restaurantRespository.findAll();
-
-
     }
 
-
+    @Override
+    public LocationDetailsResponse calculateDistanceToRestaurant(String restaurantId, Double latitude, Double longitude) {
+        Restaurant restaurant = getRestaurantById(restaurantId);
+        if (restaurant == null || restaurant.getGeoLocation() == null) {
+            return null;
+        }
     
+        try {
+            // 1. Distance Matrix API
+            String distanceUrl = String.format(
+                "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%f,%f&destinations=%f,%f&key=%s",
+                latitude, longitude,
+                restaurant.getGeoLocation().getY(),
+                restaurant.getGeoLocation().getX(),
+                googleMapsApiKey
+            );
+    
+            String distanceResponse = restTemplate.getForObject(distanceUrl, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode distanceRoot = mapper.readTree(distanceResponse);
+    
+            JsonNode distanceStatus = distanceRoot.path("rows").get(0).path("elements").get(0).path("status");
+            if (!distanceStatus.asText().equals("OK")) {
+                throw new RuntimeException("Distance API Error: " + distanceStatus.asText());
+            }
+    
+            double distanceInMeters = distanceRoot.path("rows").get(0).path("elements").get(0)
+                .path("distance").path("value").asDouble();
+
+
+             double timeInMinutes = distanceRoot.path("rows").get(0).path("elements").get(0)
+             .path("duration").path("value").asDouble() / 60;
+    
+        
+            String geoUrl = String.format(
+                "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s",
+                latitude, longitude, googleMapsApiKey
+            );
+    
+            String geoResponse = restTemplate.getForObject(geoUrl, String.class);
+            JsonNode geoRoot = mapper.readTree(geoResponse);
+            String address = "Address not found";
+            if (geoRoot.path("results").isArray() && geoRoot.path("results").size() > 0) {
+                address = geoRoot.path("results").get(0).path("formatted_address").asText();
+            }
+             return new LocationDetailsResponse(distanceInMeters, address,(int) timeInMinutes);
+    
+            
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    
+
+
+
 }
