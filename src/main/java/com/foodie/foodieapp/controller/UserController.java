@@ -59,10 +59,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    @GetMapping("/getuser")
+    public ResponseEntity<?> getUserByEmail() {
         try {
-            AppUser user = userService.getUserById(id);
+            AppUser user = userService.getUserByEmail();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

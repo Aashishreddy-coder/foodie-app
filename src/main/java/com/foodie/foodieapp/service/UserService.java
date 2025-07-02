@@ -12,7 +12,7 @@ public interface UserService {
 
    AppUser save(RegisterRequest user, MultipartFile image) throws UserAlreadyExistsException , IOException;
 
-    AppUser getUserById(Long id) throws UserNotFoundException;
+    AppUser getUserByEmail() throws UserNotFoundException;
 
     AppUser updateUser(AppUser user) throws UserNotFoundException;
 
