@@ -79,7 +79,15 @@ public class UserController {
         }
     }
 
-    
+    @PutMapping("/update/image")
+    public ResponseEntity<?> updateImage(@RequestPart("image") MultipartFile image) throws IOException {
+        try {
+            AppUser updatedUser = userService.updateImage(image);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {

@@ -16,7 +16,7 @@ public interface UserService {
 
     AppUser updateUser(AppUser user) throws UserNotFoundException;
 
-    
+    AppUser updateImage(MultipartFile image) throws IOException;
 
 
     void deleteUser(Long id) throws UserNotFoundException;

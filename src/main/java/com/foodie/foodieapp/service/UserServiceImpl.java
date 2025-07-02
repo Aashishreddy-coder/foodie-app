@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.foodie.foodieapp.domain.AppUser;
 import com.foodie.foodieapp.dto.RegisterRequest;
 import com.foodie.foodieapp.exceptions.InvalidCredentialsException;
@@ -29,6 +31,10 @@ public class UserServiceImpl implements UserService {
 
     @Value("${project.image}")
     private String path;
+
+    private String getUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Override
     public AppUser save(RegisterRequest user, MultipartFile image) throws UserAlreadyExistsException, IOException {
@@ -59,11 +65,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser updateUser(AppUser user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new UserNotFoundException("User not found with id: " + user.getId());
+        String userEmail=getUserEmail();
+        AppUser existingUser=userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userEmail));
+        
+      if(user.getName()!=null){
+            existingUser.setName(user.getName());
         }
-        return userRepository.save(user);
+        if(user.getEmail()!=null){
+            existingUser.setEmail(user.getEmail());
+        }
+        if(user.getPassword()!=null){
+            existingUser.setPassword(user.getPassword());
+        }
+        if(user.getPhone()!=null){
+            existingUser.setPhone(user.getPhone());
+        }
+        if(user.getAddress()!=null){
+            existingUser.setAddress(user.getAddress());
+        }   
+       
+
+        return userRepository.save(existingUser);
+
+
+   
+
+
+
+      
     }
+
+   
+    public AppUser updateImage(MultipartFile image) throws IOException {
+        String userEmail=getUserEmail();
+        AppUser existingUser=userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userEmail));
+
+        fileService.deleteImage(path,existingUser.getImage());
+        String fileName =fileService.uploadImage(path,image);
+        existingUser.setImage(fileName);
+        return userRepository.save(existingUser);
+    }
+
+
+
 
     @Override
     public void deleteUser(Long id) {

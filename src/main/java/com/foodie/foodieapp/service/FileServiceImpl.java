@@ -48,4 +48,14 @@ public class FileServiceImpl implements FileService{
 
         return fileName;
     }
+
+    @Override
+    public void deleteImage(String path, String image) {
+        String filePath=path+ File.pathSeparator+image;
+    
+        File file=new File(filePath);
+        if(file.exists()){
+            file.delete();
+        }
+    }
 }
