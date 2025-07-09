@@ -20,7 +20,7 @@ public class FileServiceImpl implements FileService{
 
         String randomId= UUID.randomUUID().toString();
         String fileName=randomId.concat(orginalFileName.substring(orginalFileName.lastIndexOf('.')));
-        String filePath=path+ File.pathSeparator+fileName;
+        String filePath=path+ File.separator+fileName;
 
 
         File folder=new File(path);
@@ -51,7 +51,7 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public void deleteImage(String path, String image) {
-        String filePath=path+ File.pathSeparator+image;
+        String filePath=path+ File.separator+image;
     
         File file=new File(filePath);
         if(file.exists()){
