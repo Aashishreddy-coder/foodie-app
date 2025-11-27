@@ -25,9 +25,7 @@ public class Delivery {
     private String currentTime;
     private String deliveryTime;
     private String time;
-
-    private String distance;
-   
+    private String distance;  
     private String deliveryAddress;
     private String deliveryStatus;
 

@@ -29,7 +29,7 @@ public class StripeService {
 
     @PostConstruct
     public void init() {
-        Stripe.apiKey = secretKey;  // This works
+        Stripe.apiKey = secretKey; 
     }
 
     public StripeResponse checkOutProducts(PaymentRequest paymentRequest) {
@@ -81,19 +81,7 @@ public class StripeService {
                 .putAllMetadata(metadata)
                 .build();
 
-            
-            
 
-
-
-
-
-
-
-
-
-
- 
 
 
             Session session = Session.create(params);

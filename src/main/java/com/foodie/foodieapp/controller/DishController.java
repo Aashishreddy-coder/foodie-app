@@ -61,15 +61,6 @@ public class DishController {
       
 
             List<DishDTO> dishes = dishService.searchDishesByNameAndRestaurantIds(name, city, latitude, longitude);
-
-
-
-
-
-
-
-
-        
            
 
             return new ResponseEntity<>(dishes, HttpStatus.OK);

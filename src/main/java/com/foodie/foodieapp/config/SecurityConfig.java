@@ -1,6 +1,7 @@
 package com.foodie.foodieapp.config;
 
 import java.util.List;
+import org.springframework.security.config.Customizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,14 +28,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> {}
-            )
+            .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll()
-            // 
-            
-                // .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                // .anyRequest().authenticated() 
+            .requestMatchers("/api/users/register", "/api/users/login","/images/**").permitAll()
+                .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -45,7 +42,7 @@ public class SecurityConfig {
     @Bean
 public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:3000"));
+    config.setAllowedOriginPatterns(List.of("*")); 
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     config.setAllowCredentials(true); // If using cookies

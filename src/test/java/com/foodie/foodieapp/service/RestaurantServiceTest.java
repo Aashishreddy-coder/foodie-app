@@ -29,8 +29,7 @@ public class RestaurantServiceTest {
     @Mock
     private RestaurantRespository restaurantRepository;
 
-    @Mock
-    private RestTemplate restTemplate;
+    
 
     @Mock
     private ObjectMapper objectMapper;

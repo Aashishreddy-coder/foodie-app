@@ -19,6 +19,7 @@ public class FavouritesController {
 
     @PostMapping("/save")
     public ResponseEntity<?> saveDishes(@RequestBody Favourites favourites) throws InvalidFavouriteDataException ,FavouriteAlreadyExistsException{
+        
         try{
             favouriteService.saveDishes(favourites);
             return new ResponseEntity<>("Dish saved successfully",HttpStatus.CREATED);
@@ -49,19 +50,6 @@ public class FavouritesController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/getall")
     public ResponseEntity<?> getAllDishes() throws FavouriteNotFoundException{
         try{
@@ -73,7 +61,7 @@ public class FavouritesController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteDishes(@PathVariable String id){
+    public ResponseEntity<?> deleteDishes(@PathVariable String id) {
         favouriteService.deleteDishes(id);
         return new ResponseEntity<>("Dish deleted successfully",HttpStatus.OK);
     }

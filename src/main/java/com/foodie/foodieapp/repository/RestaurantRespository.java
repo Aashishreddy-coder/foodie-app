@@ -2,12 +2,14 @@ package com.foodie.foodieapp.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import com.foodie.foodieapp.domain.Restaurant;
 
+@Repository
 public interface RestaurantRespository extends MongoRepository<Restaurant, String> {
 
     List<Restaurant> findByCityIgnoreCase(String city);

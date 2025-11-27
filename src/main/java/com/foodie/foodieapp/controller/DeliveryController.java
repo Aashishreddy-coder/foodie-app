@@ -29,6 +29,7 @@ public class DeliveryController {
             delivery = deliveryService.createDeliveryFromSession(sessionId);
         }
         return new ResponseEntity<>(delivery, HttpStatus.OK);
+        
     }
 
     @GetMapping("/delivery-status")

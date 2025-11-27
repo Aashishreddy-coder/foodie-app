@@ -29,7 +29,9 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping(value = "/register")
+    
+
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(
             @RequestPart("user") String userJson,
             @RequestPart("image") MultipartFile image) throws IOException {
@@ -60,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/getuser")
-    public ResponseEntity<?> getUserByEmail() {
+        public ResponseEntity<?> getUserByEmail() throws UserNotFoundException {
         try {
             AppUser user = userService.getUserByEmail();
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -90,7 +92,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
         try {
             userService.deleteUser(id);
             return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);

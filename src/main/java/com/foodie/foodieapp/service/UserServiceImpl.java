@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.foodie.foodieapp.domain.AppUser;
 import com.foodie.foodieapp.dto.RegisterRequest;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FileService fileService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -47,6 +51,7 @@ public class UserServiceImpl implements UserService {
         
 
         AppUser appUser=modelMapper.map(user, AppUser.class);
+        appUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         appUser.setImage(fileName);
 
@@ -113,17 +118,23 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
     }
+    
 
     @Override
     public AppUser findByEmailAndPassword(String email, String password) throws InvalidCredentialsException {
-        return userRepository.findByEmailAndPassword(email, password)
+
+        AppUser user = userRepository.findByEmail(email)
             .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+        return user;
     }
 
    

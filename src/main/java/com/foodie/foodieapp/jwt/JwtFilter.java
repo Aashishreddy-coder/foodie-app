@@ -19,41 +19,44 @@ import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
 
-       String token=request.getHeader("Authorization");
+        // Skip JWT validation for login and register
+        if (path.equals("/api/users/login") || path.equals("/api/users/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-       if(token==null || !token.startsWith("Bearer ")){
+        String token = request.getHeader("Authorization");
+
+        if (token == null || !token.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String jwtToken = token.substring(7);
+
+        try {
+            Claims claims = jwtUtil.validateToken(jwtToken);
+
+            String username = claims.getSubject();
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(username, null, null);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         filterChain.doFilter(request, response);
-        return;
-       }
-
-       String jwtToken=token.substring(7);
-
-       try{
-        Claims claims=jwtUtil.validateToken(jwtToken);
-
-        String username=claims.getSubject();
-        UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(username,null,null);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-       }catch(Exception e){
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-       }
-  
-
-       filterChain.doFilter(request, response);
-
-       
-
-       
-
-     
     }
-} 
+}

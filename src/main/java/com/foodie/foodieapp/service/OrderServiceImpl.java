@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService{
             order = new Order();
             order.setUserEmail(userEmail);
             order.setRestaurantId(restaurantId);
-         // Set initial payment status
+         
         } else if(!order.getRestaurantId().equals(restaurantId)){
             return null;
         }

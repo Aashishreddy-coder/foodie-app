@@ -19,7 +19,7 @@ public interface UserService {
     AppUser updateImage(MultipartFile image) throws IOException;
 
 
-    void deleteUser(Long id) throws UserNotFoundException;
+    void deleteUser(String id) throws UserNotFoundException;
 
     AppUser findByEmailAndPassword(String email, String password) throws InvalidCredentialsException;
 
