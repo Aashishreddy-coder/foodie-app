@@ -1,5 +1,6 @@
 package com.foodie.foodieapp.jwt;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,14 +16,17 @@ import com.foodie.foodieapp.domain.AppUser;
 @Component
 public class JwtUtil {
 
+    @Value("${jwt.secret}")
+    private String secretKey;
 
 
 
-    private static final String SECRET_KEY = "your-256-bit-secret-key-here-make-it-very-long-and-secure";
+
+
 
     public String generateToken(AppUser user){
         String jwtToken = null;
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
         jwtToken = Jwts.builder()
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
@@ -33,7 +37,7 @@ public class JwtUtil {
 
     public Claims validateToken(String token) throws Exception {
         try{
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
